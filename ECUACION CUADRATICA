@@ -1,0 +1,26 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+int main()
+{
+    double a, b, c;
+    cout<<"ingrese el valor de a: ";
+    cin>>a;
+    cout<<"ingrese el valor de b: ";
+    cin>>b;
+    cout<<"ingrese el valor de c: ";
+    cin>>c;
+    
+    double discriminante= b*b - 4*a*c;
+    if(discriminante>= 0){
+        double raiz1= (-b + sqrt(discriminante)) / (2*a);
+        double raiz2= (-b - sqrt(discriminante)) / (2*a);
+        cout<<"las raices son "<<raiz1<<" y "<<raiz2<<endl;
+    }
+    else{
+        cout<<"las raices son imaginarias"<<endl;
+    }
+    
+
+    return 0;
+}
