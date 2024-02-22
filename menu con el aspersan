@@ -30,7 +30,7 @@ int main()
                     do{
                     cin>>exponente;
                     }while(exponente<=0);
-                    potencia(base,exponente,result);  //En la Llamada no se coloca &, como argumento o parametro. 
+                    potencia(base,exponente,result);   
                     cout<<"La potencia es: "<<result<<endl;
             break;
             case 2: cout<<"Ingrese el factorial que desea calcular: ";
