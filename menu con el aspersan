@@ -5,7 +5,6 @@ void potencia(float base, float exponente, float &resultado);
 int factorial(int fact);
 float serie( float x, float n);
 
-
 int main()
 {
     int op;
