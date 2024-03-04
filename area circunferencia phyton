@@ -1,0 +1,14 @@
+class Circunferencia:
+    def _init_(self, radio):
+        self.radio = radio
+
+    def calcular_area(self):
+        area = 3.14159 * self.radio**2
+        return area
+
+
+
+radio = float(input("Ingresa el radio de la circunferencia: "))
+circunferencia = Circunferencia(radio)
+area_circunferencia = circunferencia.calcular_area()
+print("El área de la circunferencia es: ",area_circunferencia)
