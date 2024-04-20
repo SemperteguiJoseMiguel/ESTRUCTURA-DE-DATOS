@@ -1,10 +1,10 @@
 class Nodo:
-    def _init_(self, dato):
+    def __init__(self, dato):
         self.dato = dato
         self.siguiente = None
 
 class ListaEnlazada:
-    def _init_(self):
+    def __init__(self):
         self.cabeza = None
 
     def insertar_al_principio(self, dato):
@@ -18,13 +18,22 @@ class ListaEnlazada:
             print(actual.dato, end=" -> ")
             actual = actual.siguiente
         print("None")
-
-    def eliminar_en_medio(self, valor):
+    def removerduplicados(self):
+        actual = self.cabeza
+        while actual:
+            runner = actual
+            while runner.siguiente:
+                if runner.siguiente.dato == actual.dato:
+                    runner.siguiente = runner.siguiente.siguiente
+                else:
+                    runner = runner.siguiente
+            actual = actual.siguiente
+            
+    def eliminar(self, dato):
         actual = self.cabeza
         previo = None
-
         while actual:
-            if actual.dato == valor:
+            if actual.dato == dato:
                 if previo:
                     previo.siguiente = actual.siguiente
                 else:
@@ -35,12 +44,13 @@ class ListaEnlazada:
 
 # Ejemplo de uso
 lista = ListaEnlazada()
-lista.insertar_al_principio(6)
-lista.insertar_al_principio(3)
-lista.insertar_al_principio(7)
-lista.insertar_al_principio(11)
-lista.insertar_al_principio(5) 
+lista.insertar_al_principio(int(input("Ingrese el numero 1 ")))
+lista.insertar_al_principio(int(input("Ingrese el numero 2 ")))
+lista.insertar_al_principio(int(input("Ingrese el numero 3 ")))
+lista.insertar_al_principio(int(input("Ingrese el numero 4 ")))
+lista.insertar_al_principio(int(input("Ingrese el numero 5 ")))
+lista.insertar_al_principio(int(input("Ingrese el numero 6 ")))
+lista.removerduplicados()
 lista.imprimir_lista()
-
-lista.eliminar_en_medio(7)
+lista.eliminar(int(input("Ingrese el elemento a eliminar ")))
 lista.imprimir_lista()
