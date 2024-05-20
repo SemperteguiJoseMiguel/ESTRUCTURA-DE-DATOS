@@ -1,0 +1,99 @@
+#include <string>
+using namespace std;
+
+class Libro {
+private:
+    string titulo;
+    string autor;
+    int aniodePublicacion;
+    int codigo;
+
+public:
+    Libro(string titulo, string autor, int aniodePublicacion, int codigo);
+    void setTitulo(string titulo);
+    void setAutor(string autor);
+    void setAniodePublicacion(int aniodePublicacion);
+    void setCodigo(int codigo);
+    string getTitulo();
+    string getAutor();
+    int getAniodePublicacion();
+    int getCodigo();
+};
+
+#include "Libro.h"
+
+Libro::Libro(string titulo, string autor, int aniodePublicacion, int codigo)
+    : titulo(titulo), autor(autor), aniodePublicacion(aniodePublicacion), codigo(codigo) {}
+
+void Libro::setTitulo(string titulo) {
+    this->titulo = titulo;
+}
+
+void Libro::setAutor(string autor) {
+    this->autor = autor;
+}
+
+void Libro::setAniodePublicacion(int aniodePublicacion) {
+    this->aniodePublicacion = aniodePublicacion;
+}
+
+void Libro::setCodigo(int codigo) {
+    this->codigo = codigo;
+}
+
+string Libro::getTitulo() {
+    return titulo;
+}
+
+string Libro::getAutor() {
+    return autor;
+}
+
+int Libro::getAniodePublicacion() {
+    return aniodePublicacion;
+}
+
+int Libro::getCodigo() {
+    return codigo;
+}
+
+#include <iostream>
+#include <fstream>
+#include "Libro.h"
+
+void modificarLibro(const string& titulo, const string& autor, int aniodePublicacion, int codigo) {
+    fstream file("libros.dat", ios::in | ios::out | ios::binary);
+    if (!file) {
+        cout << "No se pudo abrir el archivo." << endl;
+        return;
+    }
+
+    Libro libro("", "", 0, 0); 
+    bool found = false;
+
+    while (file.read((char*)&libro, sizeof(Libro))) {
+        if (libro.getCodigo() == codigo) {
+            libro.setTitulo(titulo);
+            libro.setAutor(autor);
+            libro.setAniodePublicacion(aniodePublicacion);
+
+            file.seekp(file.tellg() - streampos(sizeof(Libro)));
+            file.write((char*)&libro, sizeof(Libro));
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        cout << "Libro no encontrado." << endl;
+    } else {
+        cout << "Libro modificado exitosamente." << endl;
+    }
+
+    file.close();
+}
+
+int main() {
+    modificarLibro("Nuevo Titulo", "Nuevo Autor", 2024, 1);
+    return 0;
+}
