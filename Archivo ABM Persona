@@ -1,0 +1,431 @@
+#pragma once
+#include <string>
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+class persona
+{
+private:
+	int codigo;
+	string nombre;
+	string apellido;
+	string fechadenac;
+	char genero;
+	string direccion;
+	string telefono;
+	char estado;
+public:
+	persona() {
+		codigo = 0;
+		nombre = "";
+		apellido = "";
+		fechadenac = "";
+		genero = ' ';
+		direccion = "";
+		telefono = "";
+		estado = ' ';
+	}
+	persona(int cod, string nom, string ape, string fec, char gen, string dir, string tel) {
+		codigo = cod;
+		nombre = nom;
+		apellido = ape;
+		fechadenac = fec;
+		genero = gen;
+		direccion = dir;
+		telefono = tel;
+		estado = 'A';
+	}
+
+	void set_persona(int cod, string nom, string ape, string fec, char gen, string dir, string tel) {
+		codigo = cod;
+		nombre = nom;
+		apellido = ape;
+		fechadenac = fec;
+		genero = gen;
+		direccion = dir;
+		telefono = tel;
+		estado = 'A';
+	}
+	int get_codigo();
+	string get_nombre();
+	string get_apellido();
+	string get_fechadenac();
+	char get_genero();
+	string get_direccion();
+	string get_telefono();
+	char get_estado();
+
+	void guardar(ofstream& fsalida);
+	bool leer(ifstream& fentrada);
+	bool eliminar(fstream& fes, int nroReg);
+	bool modificar(fstream& fes, int nroReg);
+	bool buscar(ifstream& fentrada, int nroReg);
+	int get_tam();
+
+};
+#pragma once
+#include "persona.h"
+
+using namespace std;
+
+class ABMpersona
+{
+private:
+	string normArchivo;
+	persona* person;
+public:
+	ABMpersona(string normArch) {
+		normArchivo = normArch;
+	}
+	void introducion_datos(persona* newReg);
+	void mostrar_registro(int nroReg);
+	void adicionar_nuevo();
+	void listar();
+	int buscar_reg();
+	void eliminar_reg();
+	void modificar_reg();
+
+};
+#include "persona.h"
+
+int persona::get_codigo()
+{
+    return (codigo);
+}
+
+string persona::get_nombre()
+{
+    return (nombre);
+}
+
+string persona::get_apellido()
+{
+    return (apellido);
+}
+
+string persona::get_fechadenac()
+{
+    return (fechadenac);
+}
+
+char persona::get_genero()
+{
+    return (genero);
+}
+
+string persona::get_direccion()
+{
+    return (direccion);
+}
+
+string persona::get_telefono()
+{
+    return (telefono);
+}
+
+char persona::get_estado()
+{
+    return (estado);
+}
+
+void persona::guardar(ofstream& fsalida)
+{
+    fsalida.write(reinterpret_cast<char*>(&nombre), sizeof(nombre));
+    fsalida.write(reinterpret_cast<char*>(&codigo), sizeof(codigo));
+    fsalida.write(reinterpret_cast<char*>(&apellido), sizeof(apellido));
+    fsalida.write(reinterpret_cast<char*>(&fechadenac), sizeof(fechadenac));
+    fsalida.write(reinterpret_cast<char*>(&genero), sizeof(genero));
+    fsalida.write(reinterpret_cast<char*>(&direccion), sizeof(direccion));
+    fsalida.write(reinterpret_cast<char*>(&telefono), sizeof(telefono));
+    fsalida.write(reinterpret_cast<char*>(&estado), sizeof(estado));
+}
+
+bool persona::leer(ifstream& fentrada)
+{
+    bool k = false;
+
+    if (fentrada.is_open() == true) {
+        fentrada.read(reinterpret_cast<char*>(&nombre), sizeof(nombre));
+        if (fentrada.eof() == false) {
+            fentrada.read(reinterpret_cast<char*>(&codigo), sizeof(codigo));
+            fentrada.read(reinterpret_cast<char*>(&apellido), sizeof(apellido));
+            fentrada.read(reinterpret_cast<char*>(&fechadenac), sizeof(fechadenac));
+            fentrada.read(reinterpret_cast<char*>(&genero), sizeof(genero));
+            fentrada.read(reinterpret_cast<char*>(&direccion), sizeof(direccion));
+            fentrada.read(reinterpret_cast<char*>(&telefono), sizeof(telefono));
+            fentrada.read(reinterpret_cast<char*>(&estado), sizeof(estado));
+            k = true;
+        }
+        else {
+            //  cout << "no se encontro " << endl;
+        }
+    }
+    else {
+        cout << "no existe " << endl;
+    }
+    return k;
+}
+
+bool persona::eliminar(fstream& fes, int nroReg)
+{
+    bool k = false;
+    if (fes.is_open() == true) {
+        fes.seekg(get_tam() * (nroReg - 1), ios::beg);
+        fes.read(reinterpret_cast<char*>(&nombre), sizeof(nombre));
+        if (fes.eof() == false) {
+            fes.read(reinterpret_cast<char*>(&codigo), sizeof(codigo));
+            fes.read(reinterpret_cast<char*>(&apellido), sizeof(apellido));
+            fes.read(reinterpret_cast<char*>(&fechadenac), sizeof(fechadenac));
+            fes.read(reinterpret_cast<char*>(&genero), sizeof(genero));
+            fes.read(reinterpret_cast<char*>(&direccion), sizeof(direccion));
+            fes.read(reinterpret_cast<char*>(&telefono), sizeof(telefono));
+            fes.read(reinterpret_cast<char*>(&estado), sizeof(estado));
+
+            estado = 'E';
+            fes.seekp(get_tam() * (nroReg - 1), ios::beg);
+            fes.write(reinterpret_cast<char*>(&nombre), sizeof(nombre));
+            fes.write(reinterpret_cast<char*>(&codigo), sizeof(codigo));
+            fes.write(reinterpret_cast<char*>(&apellido), sizeof(apellido));
+            fes.write(reinterpret_cast<char*>(&fechadenac), sizeof(fechadenac));
+            fes.write(reinterpret_cast<char*>(&genero), sizeof(genero));
+            fes.write(reinterpret_cast<char*>(&direccion), sizeof(direccion));
+            fes.write(reinterpret_cast<char*>(&telefono), sizeof(telefono));
+            fes.write(reinterpret_cast<char*>(&estado), sizeof(estado));
+            k = true;
+        }
+        else {
+            cout << "no se encontro " << endl;
+        }
+    }
+    else {
+        cout << "no existe " << endl;
+    }
+    return k;
+}
+
+bool persona::modificar(fstream& fes, int nroReg)
+{
+    bool k = false;
+    if (fes.is_open() == true) {
+        string nomAux;
+        nomAux = nombre;
+        fes.seekg(get_tam() * (nroReg - 1), ios::beg);
+        fes.read(reinterpret_cast<char*>(&nombre), sizeof(nombre));
+        if (fes.eof() == false) {
+            nombre = nomAux;
+            estado = 'A';
+            fes.seekp(get_tam() * (nroReg - 1), ios::beg);
+            fes.write(reinterpret_cast<char*>(&nombre), sizeof(nombre));
+            fes.write(reinterpret_cast<char*>(&codigo), sizeof(codigo));
+            fes.write(reinterpret_cast<char*>(&apellido), sizeof(apellido));
+            fes.write(reinterpret_cast<char*>(&fechadenac), sizeof(fechadenac));
+            fes.write(reinterpret_cast<char*>(&genero), sizeof(genero));
+            fes.write(reinterpret_cast<char*>(&direccion), sizeof(direccion));
+            fes.write(reinterpret_cast<char*>(&telefono), sizeof(telefono));
+            fes.write(reinterpret_cast<char*>(&estado), sizeof(estado));
+            k = true;
+        }
+        else {
+            cout << "no se encontro " << endl;
+        }
+    }
+    else {
+        cout << "no existe " << endl;
+    }
+    return k;
+}
+
+bool persona::buscar(ifstream& fentrada, int nroReg)
+{
+    bool k = false;
+    if (fentrada.is_open() == true) {
+        fentrada.seekg(get_tam() * (nroReg - 1), ios::beg);
+        fentrada.read(reinterpret_cast<char*>(&nombre), sizeof(nombre));
+        fentrada.read(reinterpret_cast<char*>(&codigo), sizeof(codigo));
+        fentrada.read(reinterpret_cast<char*>(&apellido), sizeof(apellido));
+        fentrada.read(reinterpret_cast<char*>(&fechadenac), sizeof(fechadenac));
+        fentrada.read(reinterpret_cast<char*>(&genero), sizeof(genero));
+        fentrada.read(reinterpret_cast<char*>(&direccion), sizeof(direccion));
+        fentrada.read(reinterpret_cast<char*>(&telefono), sizeof(telefono));
+        fentrada.read(reinterpret_cast<char*>(&estado), sizeof(estado));
+        if (fentrada.eof() == false) {
+            k = true;
+        }
+        else {
+            cout << "no se encontro " << endl;
+        }
+    }
+    else {
+        cout << "no existe " << endl;
+    }
+    return k;
+}
+
+int persona::get_tam()
+{
+    return (sizeof(nombre) + sizeof(codigo) + sizeof(apellido) + sizeof(fechadenac) + sizeof(genero) + sizeof(direccion) + sizeof(telefono) + sizeof(estado));
+}   
+#include "ABMpersona.h"
+
+void ABMpersona::introducion_datos(persona* newReg)
+{
+	int codigo;
+	string nombre, apellido, fechadenac, direccion, telefono;
+	char estado, genero;
+	cout << endl;
+	cout << "ingrese el nombre completo de la persona " << endl;
+	cin.ignore();
+	getline(cin, nombre);
+	cout << "ingrese el codigo de la persona " << endl;
+	cin >> codigo;
+	cin.ignore();
+	cout << "ingrese el apellido completo de la persona " << endl;
+	getline(cin, apellido);
+	cout << "ingrese la fecha de nacimiento " << endl;
+	getline(cin, fechadenac);
+	cout << "ingrese la direccion de donde vive actualmente " << endl;
+	getline(cin, direccion);
+	cout << "ingrese el telefono actual de la persona " << endl;
+	getline(cin, telefono);
+	cout << "ingrese el genero de la persona M/F " << endl;
+	cin >> genero;
+	cin.ignore();
+
+	newReg->set_persona(codigo, nombre, apellido, fechadenac, genero, direccion, telefono);
+}
+
+void ABMpersona::mostrar_registro(int nroReg)
+{
+	cout << endl << nroReg << ".- " << person->get_codigo() << " " << person->get_nombre() << " " << person->get_apellido() << " " << person->get_fechadenac() << " " << person->get_genero() << " " << person->get_direccion() << " " << person->get_telefono() << " " << person->get_estado();
+}	
+
+void ABMpersona::adicionar_nuevo()
+{
+	ofstream fsalida(normArchivo, ios::app | ios::binary);
+	person = new persona();
+	introducion_datos(person);
+	person->guardar(fsalida);
+	fsalida.close();
+}
+
+void ABMpersona::listar()
+{
+	int cr = 0;
+	person = new persona();
+	ifstream fentrada(normArchivo, ios::in | ios::binary);
+	while (person->leer(fentrada) == true) {
+		cr++;
+		if (person->get_estado() == 'A'){
+			mostrar_registro(cr);
+			}
+	}
+	fentrada.close();
+}
+
+int ABMpersona::buscar_reg()
+{
+	int nroReg; 
+	cout << "ingrese el codigo de la persona qu quiere buscar " << endl;
+	cin >> nroReg;
+	person = new persona();
+	ifstream fentrada(normArchivo, ios::in | ios::binary);
+	if (person->buscar(fentrada,nroReg) == true) {
+		mostrar_registro(nroReg);
+	}
+	else {
+		cout << "el registro no existe " << endl;
+		nroReg = -1;
+	}
+	fentrada.close();
+
+	return nroReg;
+}
+
+void ABMpersona::eliminar_reg()
+{
+	int nroReg; 
+	nroReg = buscar_reg();
+
+	if (nroReg > 0) {
+		fstream fes(normArchivo, ios::in | ios::out | ios::binary);
+		person = new persona();
+		if (person->eliminar(fes, nroReg) == true) {
+			cout << "eliminado exitosamente " << endl;
+		}
+		else {
+			cout << "no se ha encontrado" << endl;
+		}
+		fes.close();
+	}
+}
+
+void ABMpersona::modificar_reg()
+{
+	int nroReg;
+	nroReg = buscar_reg();
+
+	if (nroReg > 0) {
+		fstream fes(normArchivo, ios::in | ios::out | ios::binary);
+		person = new persona();
+		introducion_datos(person);
+		if (person->modificar(fes, nroReg) == true) {
+			cout << "modificado " << endl;
+		}
+		else {
+			cout << "no existe el archivo" << endl;
+		}
+		fes.close();
+	}
+}
+#include <iostream>
+#include <fstream>
+#include "ABMpersona.h"
+
+using namespace std;
+
+int main() {
+	int op;
+
+	ABMpersona* person = new ABMpersona("person.dat");
+
+	do
+	{
+		cout << "\n1. Adicionar nuevo" << endl;
+		cout << "2. Listar" << endl;
+		cout << "3. Buscar registro" << endl;
+		cout << "4. Eliminar registro" << endl;
+		cout << "5. Modificar registro" << endl;
+		cout << "0. Salir" << endl;
+		cin >> op;
+		switch (op)
+		{
+		case 0:
+			cout << "saliendo pa " << endl;
+			break;
+		case 1:
+			person->adicionar_nuevo();
+			cout << "Elementos agregados ..." << endl;
+			break;
+		case 2:
+			person->listar();
+			break;
+		case 3:
+			person->buscar_reg();
+			break;
+		case 4:
+			person->eliminar_reg();
+			break;
+		case 5:
+			person->modificar_reg();
+			break;
+		default:
+			cout << "No ingreso ninguna de las opciones" << endl;
+		}
+	} while (op!=0);
+
+	cout << "Fin del programa" << endl;
+
+	return 0;
+}
